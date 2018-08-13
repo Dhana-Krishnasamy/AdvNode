@@ -10,7 +10,7 @@ afterEach(async () => {
   await page.close();
 });
 
-describe("When logged in", async () => {
+describe("When logged in", () => {
   beforeEach(async () => {
     await page.login();
     await page.click("a.btn-floating");
@@ -53,3 +53,42 @@ describe("When logged in", async () => {
     });
   });
 });
+
+describe("When not logged in ", () => {
+  //Executing script from Chrome
+  it("User cannot create blog posts", async () => {
+    const result = await page.evaluate(() => {
+      return fetch("/api/blogs", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "My console title",
+          content: "My content"
+        })
+      }).then(res => res.json());
+    });
+    expect(result).toEqual({ error: "You must log in!" });
+  });
+  it("User cannot see a list of blogs", async () => {
+    const result = await page.evaluate(() => {
+      return fetch("/api/blogs", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" }
+      }).then(res => res.json());
+    });
+    expect(result).toEqual({ error: "You must log in!" });
+  });
+});
+
+/**
+  fetch('/api/blogs',
+     {  method:'POST', 
+        credentials:'same-origin',
+        headers: 
+               { 'Content-Type' : 'application/json' },
+        body: JSON.stringify({title:'My console title', content:'My content'})
+     }
+  )
+ */
