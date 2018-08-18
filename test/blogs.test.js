@@ -55,16 +55,35 @@ describe("When logged in", () => {
 });
 
 describe("When not logged in ", () => {
-  //Executing script from Chrome
-  it("User cannot create blog posts", async () => {
-    const result = await page.post("/api/blogs", {
-      title: "My console title",
-      content: "My content"
+  const actions = [
+    {
+      method: "get",
+      path: "/api/blogs"
+    },
+    {
+      method: "post",
+      path: "/api/blogs",
+      data: {
+        title: "T",
+        content: "C"
+      }
+    }
+  ];
+  test("Blog releated actions are prohibited", async () => {
+    const results = await page.execRequests(actions);
+    results.forEach(result => {
+      expect(result).toEqual({ error: "You must log in!" });
     });
-    expect(result).toEqual({ error: "You must log in!" });
   });
-  it("User cannot see a list of blogs", async () => {
-    const result = await page.get("/api/blogs");
-    expect(result).toEqual({ error: "You must log in!" });
-  });
+  // it("User cannot create blog posts", async () => {
+  //   const result = await page.post("/api/blogs", {
+  //     title: "My console title",
+  //     content: "My content"
+  //   });
+  //   expect(result).toEqual({ error: "You must log in!" });
+  // });
+  // it("User cannot see a list of blogs", async () => {
+  //   const result = await page.get("/api/blogs");
+  //   expect(result).toEqual({ error: "You must log in!" });
+  // });
 });
