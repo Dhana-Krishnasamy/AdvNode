@@ -7,6 +7,6 @@ const keys = require("../config/keys");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(
-  keys.mongoURI,
-  { useMongoClient: true }
+  keys.mongoURI
+  // { useMongoClient: true }
 );
